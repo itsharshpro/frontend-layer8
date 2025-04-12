@@ -1,5 +1,12 @@
 <script lang="ts">
     // Import any necessary components
+    
+    // Function to handle extension link clicks
+    function handleExtensionClick(browser: string) {
+        // In the future, this could redirect to the actual store page
+        // For now, just show an alert
+        alert(`${browser} extension coming soon!`);
+    }
 </script>
 
 <section class="py-16 px-4 min-h-screen">
@@ -14,12 +21,18 @@
         <p class="text-purple-200 mb-6">Install our browser extension to access powerful development tools directly in your browser.</p>
         
         <div class="flex justify-center gap-6 mb-8">
-          <a href="#" class="inline-block px-6 py-3 bg-neon-purple bg-opacity-20 hover:bg-opacity-40 border border-neon-purple text-neon-purple rounded-full transition-all">
+          <button 
+            on:click={() => handleExtensionClick('Chrome')}
+            class="inline-block px-6 py-3 bg-neon-purple bg-opacity-20 hover:bg-opacity-40 border border-neon-purple text-neon-purple rounded-full transition-all cursor-pointer"
+          >
             Chrome Extension
-          </a>
-          <a href="#" class="inline-block px-6 py-3 bg-neon-blue bg-opacity-20 hover:bg-opacity-40 border border-neon-blue text-neon-blue rounded-full transition-all">
+          </button>
+          <button 
+            on:click={() => handleExtensionClick('Firefox')}
+            class="inline-block px-6 py-3 bg-neon-blue bg-opacity-20 hover:bg-opacity-40 border border-neon-blue text-neon-blue rounded-full transition-all cursor-pointer"
+          >
             Firefox Add-on
-          </a>
+          </button>
         </div>
       </div>
       

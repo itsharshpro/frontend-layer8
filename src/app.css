@@ -30,7 +30,7 @@
 }
 
 .blur-panel {
-  @apply backdrop-blur-md bg-purple-950 bg-opacity-40 border border-purple-700 border-opacity-30;
+  @apply backdrop-blur-md bg-purple-950 bg-opacity-20 border border-purple-700 border-opacity-30;
 }
 
 .card-blur {
