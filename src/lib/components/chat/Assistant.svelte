@@ -1,8 +1,14 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import CustomTerms from './CustomTerms.svelte';
+  
+    interface Message {
+      role: 'user' | 'assistant';
+      content: string;
+    }
   
     let query = '';
-    let messages = [];
+    let messages: Message[] = [];
     let isLoading = false;
     let error: string | null = null;
     let thinkingInfo: {
@@ -10,6 +16,9 @@
       anonymized: string;
       report: string;
     } | null = null;
+  
+    // UI state
+    let showCustomTerms = false;
   
     const API_URL = 'http://localhost:8000';
     const DEFAULT_PROVIDER = 'gemini';
@@ -80,86 +89,136 @@
         sendQuery();
       }
     }
+
+    function toggleCustomTerms() {
+      showCustomTerms = !showCustomTerms;
+    }
   </script>
   
-  <!-- Improved UI with blur effects -->
-  <div class="blur-panel rounded-xl shadow-2xl overflow-hidden backdrop-blur-lg">
-  
-    <!-- Chat Messages Container with Blurry Effect -->
-    <div class="h-[500px] overflow-y-auto p-6 space-y-4 backdrop-blur-sm bg-opacity-30 bg-dark">
-      {#each messages as message}
-        <div class="chat-message {message.role === 'user' ? 'flex justify-end' : ''}">
-          <div class="{message.role === 'user' 
-            ? 'bg-purple-800 bg-opacity-60 backdrop-blur-xs ml-12 rounded-lg p-4 max-w-[80%] shadow-lg' 
-            : 'bg-purple-900 bg-opacity-50 backdrop-blur-xs mr-12 border-l-4 border-neon-purple rounded-lg p-4 max-w-[80%] shadow-lg'}">
-            <p class="text-slate-100">{@html message.content.replace(/\n/g, '<br>')}</p>
-          </div>
-        </div>
-      {/each}
-  
-      <!-- Thinking & Loading States -->
-      {#if thinkingInfo}
-        <div class="bg-purple-800 bg-opacity-40 backdrop-blur-xs border-l-4 border-neon-pink text-slate-200 p-4 rounded-md space-y-2 text-sm mr-12 shadow-lg">
-          <p class="font-bold flex items-center"><span class="text-neon-pink mr-2">🔒</span> Anonymizing your message securely...</p>
-          <div class="space-y-1 bg-purple-900 bg-opacity-60 p-3 rounded-md">
-            <p><span class="font-semibold text-neon-blue">Original:</span> {thinkingInfo.original}</p>
-            <p><span class="font-semibold text-neon-blue">Anonymized:</span> {thinkingInfo.anonymized}</p>
-            <p><span class="font-semibold text-neon-blue">Report:</span> {thinkingInfo.report}</p>
-          </div>
-        </div>
-      {:else if isLoading}
-        <div class="flex items-center space-x-2 mr-12 bg-purple-800 bg-opacity-40 backdrop-blur-xs border-l-4 border-neon-blue rounded-lg p-4 shadow-lg">
-          <div class="animate-pulse flex space-x-1">
-            <div class="h-2 w-2 bg-neon-blue rounded-full"></div>
-            <div class="h-2 w-2 bg-neon-blue rounded-full animation-delay-200"></div>
-            <div class="h-2 w-2 bg-neon-blue rounded-full animation-delay-400"></div>
-          </div>
-          <span class="text-purple-200">Thinking...</span>
-        </div>
-      {/if}
-  
-      {#if error}
-        <div class="bg-red-900 bg-opacity-40 backdrop-blur-xs border-l-4 border-red-500 text-white p-4 rounded-lg mr-12 shadow-lg">
-          <p class="font-medium">{error}</p>
-        </div>
-      {/if}
-    </div>
-  
-    <!-- Input Area -->
-    <div class="p-4 bg-purple-950 bg-opacity-60 backdrop-blur-sm border-t border-purple-700">
-      <div class="flex space-x-2">
-        <textarea
-          bind:value={query}
-          on:keydown={handleKeydown}
-          placeholder="Type your message here... (Press Enter to send)"
-          rows="2"
-          class="flex-1 px-4 py-3 bg-dark bg-opacity-80 text-purple-100 rounded-lg border border-purple-700 focus:ring-2 focus:ring-neon-purple focus:outline-none resize-none"
-        ></textarea>
-        <button
-          on:click={sendQuery}
-          class="px-6 py-2 bg-gradient-to-r from-neon-purple to-neon-blue hover:opacity-90 text-white font-medium rounded-lg shadow transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[80px]"
-          disabled={isLoading || !query.trim()}
-        >
-          {#if isLoading}
-            <div class="h-5 w-5 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
-          {:else}
-            Send
+  <!-- Main container with improved layout -->
+  <div class="w-full flex flex-col lg:flex-row lg:space-x-8">
+    <!-- Chat container -->
+    <div class="flex-grow max-w-4xl mx-auto w-full">
+      <!-- Improved UI with enhanced blur effects -->
+      <div class="card-blur shadow-2xl overflow-hidden">
+      
+        <!-- Chat Messages Container with Blurry Effect -->
+        <div class="h-[500px] overflow-y-auto p-6 space-y-4 backdrop-blur-xl bg-opacity-20 bg-purple-950">
+          {#each messages as message}
+            <div class="chat-message {message.role === 'user' ? 'flex justify-end' : ''}">
+              <div class="{message.role === 'user' 
+                ? 'bg-purple-800 bg-opacity-60 backdrop-blur-xs ml-12 rounded-lg p-4 max-w-[80%] shadow-lg' 
+                : 'bg-purple-900 bg-opacity-50 backdrop-blur-xs mr-12 border-l-4 border-neon-purple rounded-lg p-4 max-w-[80%] shadow-lg'}">
+                <p class="text-slate-100">{@html message.content.replace(/\n/g, '<br>')}</p>
+              </div>
+            </div>
+          {/each}
+      
+          <!-- Thinking & Loading States -->
+          {#if thinkingInfo}
+            <div class="bg-purple-800 bg-opacity-40 backdrop-blur-xs border-l-4 border-neon-pink text-slate-200 p-4 rounded-md space-y-2 text-sm mr-12 shadow-lg">
+              <p class="font-bold flex items-center"><span class="text-neon-pink mr-2">🔒</span> Anonymizing your message securely...</p>
+              <div class="space-y-1 bg-purple-900 bg-opacity-60 p-3 rounded-md">
+                <p><span class="font-semibold text-neon-blue">Original:</span> {thinkingInfo.original}</p>
+                <p><span class="font-semibold text-neon-blue">Anonymized:</span> {thinkingInfo.anonymized}</p>
+                <p><span class="font-semibold text-neon-blue">Report:</span> {thinkingInfo.report}</p>
+              </div>
+            </div>
+          {:else if isLoading}
+            <div class="flex items-center space-x-2 mr-12 bg-purple-800 bg-opacity-40 backdrop-blur-xs border-l-4 border-neon-blue rounded-lg p-4 shadow-lg">
+              <div class="animate-pulse flex space-x-1">
+                <div class="h-2 w-2 bg-neon-blue rounded-full"></div>
+                <div class="h-2 w-2 bg-neon-blue rounded-full animation-delay-200"></div>
+                <div class="h-2 w-2 bg-neon-blue rounded-full animation-delay-400"></div>
+              </div>
+              <span class="text-purple-200">Thinking...</span>
+            </div>
           {/if}
-        </button>
+      
+          {#if error}
+            <div class="bg-red-900 bg-opacity-40 backdrop-blur-xs border-l-4 border-red-500 text-white p-4 rounded-lg mr-12 shadow-lg">
+              <p class="font-medium">{error}</p>
+            </div>
+          {/if}
+        </div>
+      
+        <!-- Input Area with enhanced blur -->
+        <div class="p-4 backdrop-blur-xl bg-purple-950 bg-opacity-30 border-t border-purple-700 border-opacity-40">
+          <div class="flex space-x-2">
+            <textarea
+              bind:value={query}
+              on:keydown={handleKeydown}
+              placeholder="Type your message here... (Press Enter to send)"
+              rows="2"
+              class="flex-1 px-4 py-3 bg-dark bg-opacity-80 text-purple-100 rounded-lg border border-purple-700 focus:ring-2 focus:ring-neon-purple focus:outline-none resize-none"
+            ></textarea>
+            <button
+              on:click={sendQuery}
+              class="px-6 py-2 bg-gradient-to-r from-neon-purple to-neon-blue hover:opacity-90 text-white font-medium rounded-lg shadow transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[80px]"
+              disabled={isLoading || !query.trim()}
+            >
+              {#if isLoading}
+                <div class="h-5 w-5 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+              {:else}
+                Send
+              {/if}
+            </button>
+          </div>
+      
+          <!-- Footer with toggle for custom terms -->
+          <footer class="mt-4 flex justify-between items-center text-xs text-purple-400">
+            <div>
+              Using {DEFAULT_PROVIDER} • Model: {DEFAULT_MODEL} •
+              <a
+                href="http://localhost:8000/docs"
+                class="text-neon-blue hover:text-neon-purple transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >API Docs</a>
+            </div>
+            <button 
+              on:click={toggleCustomTerms}
+              class="text-neon-blue hover:text-neon-purple transition-colors flex items-center"
+            >
+              <span class="mr-1">{showCustomTerms ? 'Hide' : 'Show'} Custom Terms</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </footer>
+        </div>
       </div>
-  
-      <!-- Footer -->
-      <footer class="mt-4 text-center text-xs text-purple-400">
-        Using {DEFAULT_PROVIDER} • Model: {DEFAULT_MODEL} •
-        <a
-          href="http://localhost:8000/docs"
-          class="text-neon-blue hover:text-neon-purple transition-colors"
-          target="_blank"
-          rel="noopener noreferrer"
-        >API Docs</a>
-      </footer>
     </div>
+
+    <!-- Custom Terms Panel (conditionally shown) -->
+    {#if showCustomTerms}
+      <div class="mt-6 lg:mt-0 w-full lg:w-80 hidden lg:block">
+        <div class="card-blur p-4">
+          <CustomTerms />
+        </div>
+      </div>
+    {/if}
   </div>
+  
+  <!-- Mobile version of custom terms (shown as modal) -->
+  {#if showCustomTerms}
+    <div class="lg:hidden fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="w-full max-w-md">
+        <div class="relative">
+          <button 
+            on:click={toggleCustomTerms} 
+            class="absolute top-2 right-2 text-purple-200 hover:text-white"
+            aria-label="Close custom terms panel"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <CustomTerms />
+        </div>
+      </div>
+    </div>
+  {/if}
   
   <style>
     .animation-delay-200 {

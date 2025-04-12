@@ -6,6 +6,8 @@
       // Add mouse light effect
       const mouseLight = document.createElement('div');
       mouseLight.className = 'mouse-light';
+      // Ensure the mouse light is positioned behind content but visible
+      mouseLight.style.zIndex = '-1';
       document.body.appendChild(mouseLight);
       
       // Initial position at center
