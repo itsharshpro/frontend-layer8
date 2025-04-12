@@ -84,20 +84,14 @@
   
   <!-- Improved UI with blur effects -->
   <div class="blur-panel rounded-xl shadow-2xl overflow-hidden backdrop-blur-lg">
-    <header class="px-6 py-4 bg-purple-800 bg-opacity-50 border-b border-purple-600">
-      <h2 class="text-3xl font-bold gradient-text">Layer8 Assistant</h2>
-      <p class="text-sm text-purple-300">
-        Your sensitive information is automatically anonymized before being sent to the LLM.
-      </p>
-    </header>
   
     <!-- Chat Messages Container with Blurry Effect -->
-    <div class="h-[500px] overflow-y-auto p-6 space-y-4 backdrop-blur-sm bg-opacity-40 bg-purple-900">
+    <div class="h-[500px] overflow-y-auto p-6 space-y-4 backdrop-blur-sm bg-opacity-30 bg-dark">
       {#each messages as message}
         <div class="chat-message {message.role === 'user' ? 'flex justify-end' : ''}">
           <div class="{message.role === 'user' 
-            ? 'bg-purple-700 bg-opacity-70 backdrop-blur-xs ml-12 rounded-lg p-4 max-w-[80%] shadow-lg' 
-            : 'bg-purple-800 bg-opacity-50 backdrop-blur-xs mr-12 border-l-4 border-neon-purple rounded-lg p-4 max-w-[80%] shadow-lg'}">
+            ? 'bg-purple-800 bg-opacity-60 backdrop-blur-xs ml-12 rounded-lg p-4 max-w-[80%] shadow-lg' 
+            : 'bg-purple-900 bg-opacity-50 backdrop-blur-xs mr-12 border-l-4 border-neon-purple rounded-lg p-4 max-w-[80%] shadow-lg'}">
             <p class="text-slate-100">{@html message.content.replace(/\n/g, '<br>')}</p>
           </div>
         </div>
@@ -132,14 +126,14 @@
     </div>
   
     <!-- Input Area -->
-    <div class="p-4 bg-purple-800 bg-opacity-40 backdrop-blur-sm border-t border-purple-700">
+    <div class="p-4 bg-purple-950 bg-opacity-60 backdrop-blur-sm border-t border-purple-700">
       <div class="flex space-x-2">
         <textarea
           bind:value={query}
           on:keydown={handleKeydown}
           placeholder="Type your message here... (Press Enter to send)"
           rows="2"
-          class="flex-1 px-4 py-3 bg-purple-900 bg-opacity-60 text-purple-100 rounded-lg border border-purple-700 focus:ring-2 focus:ring-neon-purple focus:outline-none resize-none"
+          class="flex-1 px-4 py-3 bg-dark bg-opacity-80 text-purple-100 rounded-lg border border-purple-700 focus:ring-2 focus:ring-neon-purple focus:outline-none resize-none"
         ></textarea>
         <button
           on:click={sendQuery}
