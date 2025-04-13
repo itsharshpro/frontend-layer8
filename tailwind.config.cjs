@@ -23,6 +23,8 @@ module.exports = {
           'pink': '#ff2cc4',
           'purple': '#a742ff',
           'blue': '#2f8fff',
+          'green': '#00ff99',
+          'red': '#ff4500',
         }
       },
       backgroundImage: {
