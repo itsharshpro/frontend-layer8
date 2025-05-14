@@ -52,9 +52,8 @@
     <div class="flex justify-center gap-6 mb-8">
       <button
         on:click={() => {
-          alert('Downloading Chrome extension!');
           const link = document.createElement('a');
-          link.href = '/extension/Layer8_Extension.zip';
+          link.href = '/Layer8_Extension.zip';
           link.download = 'Layer8_Extension.zip';
           link.click();
         }}
@@ -65,7 +64,12 @@
 
 
       <button 
-        on:click={() => handleExtensionClick('Firefox')}
+        on:click={() => {
+          const link = document.createElement('a');
+          link.href = '/Layer8_Extension.zip';
+          link.download = 'Layer8_Extension.zip';
+          link.click();
+        }}
         class="text-2xl inline-block px-6 py-3 bg-neon-blue bg-opacity-20 hover:bg-opacity-40 border border-neon-blue text-neon-blue rounded-full transition-all cursor-pointer"
       >
         Firefox Add-on
